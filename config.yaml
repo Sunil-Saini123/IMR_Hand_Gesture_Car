@@ -1,0 +1,20 @@
+network:
+  host: "127.0.0.1"
+  port: 5005
+  timeout_seconds: 0.5
+robot:
+  max_wheel_speed_rad_s: 6.28
+  wheel_radius_m: 0.0205
+  wheel_base_m: 0.052
+gesture:
+  camera_index: 0
+  width: 640
+  height: 480
+  stable_frames: 4
+  default_speed: 0.4
+mapping:
+  resolution_m_per_cell: 0.05
+  width_cells: 120
+  height_cells: 120
+  log_odds_hit: 0.85
+  log_odds_miss: -0.4

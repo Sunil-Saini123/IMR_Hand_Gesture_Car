@@ -1,0 +1,167 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.14411685842054073 0.7072162778106524 -0.6921527775850067 0.5726509937675823
+  position -1.5979049790769508 -0.34041378159972496 0.5789477660736398
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+Floor {
+  size 4 4
+  appearance PBRAppearance {
+    baseColor 0.82 0.84 0.82
+    roughness 1
+    metalness 0
+  }
+}
+Solid {
+  translation 0 0.15 -2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.28 0.32
+        roughness 1
+      }
+      geometry Box {
+        size 4 0.3 0.1
+      }
+    }
+  ]
+  name "north_wall"
+  boundingObject Box {
+    size 4 0.3 0.1
+  }
+}
+Solid {
+  translation 0 0.15 2
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.28 0.32
+        roughness 1
+      }
+      geometry Box {
+        size 4 0.3 0.1
+      }
+    }
+  ]
+  name "south_wall"
+  boundingObject Box {
+    size 4 0.3 0.1
+  }
+}
+Solid {
+  translation -2 0.15 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.28 0.32
+        roughness 1
+      }
+      geometry Box {
+        size 0.1 0.3 4
+      }
+    }
+  ]
+  name "west_wall"
+  boundingObject Box {
+    size 0.1 0.3 4
+  }
+}
+Solid {
+  translation 2 0.15 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.28 0.32
+        roughness 1
+      }
+      geometry Box {
+        size 0.1 0.3 4
+      }
+    }
+  ]
+  name "east_wall"
+  boundingObject Box {
+    size 0.1 0.3 4
+  }
+}
+Solid {
+  translation -0.55 0.12 -0.45
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.7 0.35 0.2
+        roughness 1
+      }
+      geometry Box {
+        size 0.55 0.24 0.55
+      }
+    }
+  ]
+  name "obstacle_1"
+  boundingObject Box {
+    size 0.55 0.24 0.55
+  }
+}
+Solid {
+  translation 0.65 0.12 0.35
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.45 0.75
+        roughness 1
+      }
+      geometry Box {
+        size 0.45 0.24 0.8
+      }
+    }
+  ]
+  name "obstacle_2"
+  boundingObject Box {
+    size 0.45 0.24 0.8
+  }
+}
+Solid {
+  translation 0.2 0.12 -1.1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.25 0.6 0.35
+        roughness 1
+      }
+      geometry Box {
+        size 0.65 0.24 0.3
+      }
+    }
+  ]
+  name "obstacle_3"
+  boundingObject Box {
+    size 0.65 0.24 0.3
+  }
+}
+E-puck {
+  hidden position_0_0 287.8139864987365
+  hidden position_0_1 285.6544962211764
+  hidden linearVelocity_0 -2.9782613417375783e-15 -3.9195032221611376e-17 -3.552713678800501e-15
+  hidden angularVelocity_0 -4.294801820233546e-15 5.700403895715171e-14 5.786239937094638e-15
+  hidden rotation_1 0 -1 0 1.2125376315244942
+  hidden linearVelocity_1 -4.296369494145466e-15 -2.362839764039633e-15 -2.011604002819385e-15
+  hidden angularVelocity_1 3.0581426696393134e-13 -2.0553549515258568e-13 5.429974788379765e-15
+  hidden rotation_2 0 -0.9999999999999999 0 3.3720279090846046
+  hidden linearVelocity_2 -1.0703420955053565e-15 9.501784996811987e-16 4.3043179275496167e-17
+  hidden angularVelocity_2 -4.2313527085644e-13 4.1604524939725914e-13 5.795569052440845e-15
+  translation -0.8005500000001122 -0.7783300000001122 -6.396199578778856e-05
+  rotation -9.262345365542218e-10 3.797739933382446e-10 -1 0.7797752320711582
+  name "gesture_epuck"
+  controller "robot_controller"
+}
