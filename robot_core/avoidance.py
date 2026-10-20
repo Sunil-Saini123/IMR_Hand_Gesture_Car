@@ -1,5 +1,6 @@
 """Simple potential-field steering suggestion."""
 import math
+import numpy as np
 
 
 def potential_field(goal_vector, obstacles_relative, influence_radius=1.0, repulsion_gain=0.8):
@@ -12,3 +13,12 @@ def potential_field(goal_vector, obstacles_relative, influence_radius=1.0, repul
             fx -= magnitude * ox / distance
             fy -= magnitude * oy / distance
     return math.atan2(fy, fx), (fx, fy)
+
+
+def scan_to_points(angles, ranges, max_distance):
+    """Robot-frame (x, y) points of the scan returns closer than max_distance."""
+    angles = np.asarray(angles, dtype=float)
+    ranges = np.asarray(ranges, dtype=float)
+    near = np.isfinite(ranges) & (ranges < max_distance)
+    return list(zip((ranges[near] * np.cos(angles[near])).tolist(),
+                    (ranges[near] * np.sin(angles[near])).tolist()))

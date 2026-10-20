@@ -3,5 +3,8 @@ __pycache__/
 .pytest_cache/
 *.py[cod]
 data/*.csv
+data/runs/
 evaluation/plots/*.png
 models/*.joblib
+# Webots GUI layout state, rewritten every time the world is saved
+webots/worlds/.*.wbproj

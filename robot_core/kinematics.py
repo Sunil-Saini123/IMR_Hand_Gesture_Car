@@ -1,4 +1,4 @@
-"""Differential-drive forward kinematics."""
+"""Differential-drive forward and inverse kinematics."""
 from dataclasses import dataclass
 import math
 
@@ -14,6 +14,24 @@ def body_velocity(v_left: float, v_right: float, wheel_base: float) -> tuple[flo
     if wheel_base <= 0:
         raise ValueError("wheel_base must be positive")
     return (v_right + v_left) / 2.0, (v_right - v_left) / wheel_base
+
+
+def wheel_speeds(v: float, omega: float, wheel_radius: float, wheel_base: float,
+                 max_wheel_speed: float) -> tuple[float, float]:
+    """Body velocity (m/s, rad/s) -> wheel angular speeds (rad/s).
+
+    When a wheel would exceed max_wheel_speed both wheels are scaled by the same
+    factor, so the commanded turning radius is preserved.
+    """
+    if wheel_radius <= 0 or wheel_base <= 0:
+        raise ValueError("wheel_radius and wheel_base must be positive")
+    left = (v - omega * wheel_base / 2.0) / wheel_radius
+    right = (v + omega * wheel_base / 2.0) / wheel_radius
+    largest = max(abs(left), abs(right))
+    if largest > max_wheel_speed > 0:
+        scale = max_wheel_speed / largest
+        left, right = left * scale, right * scale
+    return left, right
 
 
 def wrap_angle(angle: float) -> float:

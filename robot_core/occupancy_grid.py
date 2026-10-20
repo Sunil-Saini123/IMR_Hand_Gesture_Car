@@ -18,6 +18,13 @@ class OccupancyGrid:
         row = int(round(self.height / 2 - y / self.resolution))
         return row, col
 
+    def grid_to_world(self, row, col):
+        """Centre of cell (row, col) in world coordinates."""
+        return (col - self.width / 2) * self.resolution, (self.height / 2 - row) * self.resolution
+
+    def in_bounds(self, row, col):
+        return 0 <= row < self.height and 0 <= col < self.width
+
     @staticmethod
     def line(r0, c0, r1, c1):
         dx, dy = abs(c1-c0), abs(r1-r0)
@@ -54,5 +61,53 @@ class OccupancyGrid:
                 self.log_odds[r, c] = np.clip(self.log_odds[r, c] + self.hit,
                                               self.clamp_min, self.clamp_max)
 
+    def _flat_indices(self, xs, ys):
+        cols = np.rint(xs / self.resolution + self.width / 2).astype(int)
+        rows = np.rint(self.height / 2 - ys / self.resolution).astype(int)
+        inside = (rows >= 0) & (rows < self.height) & (cols >= 0) & (cols < self.width)
+        return np.unique(rows[inside] * self.width + cols[inside])
+
+    def update_scan(self, pose, angles, ranges, max_range):
+        """Vectorized update from a whole scan (angles in the robot frame).
+
+        Each cell receives at most one hit or one miss per scan. Rays with no
+        return (inf, or >= max_range) only clear free space; NaN rays are skipped.
+        """
+        x, y, theta = pose
+        angles = np.asarray(angles, dtype=float)
+        ranges = np.asarray(ranges, dtype=float)
+        valid = ~np.isnan(ranges)
+        angles, ranges = angles[valid], ranges[valid]
+        hit = np.isfinite(ranges) & (ranges < max_range)
+        usable = np.clip(np.where(np.isfinite(ranges), ranges, max_range), 0.0, max_range)
+        world = theta + angles
+        cos, sin = np.cos(world), np.sin(world)
+
+        step = self.resolution / 2
+        samples = np.arange(int(math.ceil(max_range / step)) + 1) * step
+        free = samples[None, :] < (usable[:, None] - step)
+        px = x + samples[None, :] * cos[:, None]
+        py = y + samples[None, :] * sin[:, None]
+        free_cells = self._flat_indices(px[free], py[free])
+        hit_cells = self._flat_indices(x + usable[hit] * cos[hit], y + usable[hit] * sin[hit])
+        free_cells = np.setdiff1d(free_cells, hit_cells, assume_unique=True)
+
+        flat = self.log_odds.reshape(-1)
+        flat[free_cells] += self.miss
+        flat[hit_cells] += self.hit
+        np.clip(self.log_odds, self.clamp_min, self.clamp_max, out=self.log_odds)
+
     def probabilities(self):
         return 1.0 / (1.0 + np.exp(-self.log_odds))
+
+    def save(self, path):
+        np.savez_compressed(path, log_odds=self.log_odds, resolution=self.resolution,
+                            width=self.width, height=self.height)
+
+    @classmethod
+    def load(cls, path):
+        data = np.load(path)
+        grid = cls(width=int(data["width"]), height=int(data["height"]),
+                   resolution=float(data["resolution"]))
+        grid.log_odds = data["log_odds"].astype(np.float32)
+        return grid
