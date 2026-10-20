@@ -37,8 +37,12 @@ def parse_args():
 
 
 def put(frame, text, row, color=WHITE, scale=0.5):
-    cv2.putText(frame, text, (10, 24 + 22 * row), cv2.FONT_HERSHEY_SIMPLEX, scale, (0, 0, 0), 3)
-    cv2.putText(frame, text, (10, 24 + 22 * row), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1)
+    # Outline from 1-px offset copies: OpenCV 5 widens glyphs with thickness, so a thicker black
+    # copy would no longer line up with the coloured text.
+    x, y = 10, 24 + 22 * row
+    for dx, dy in ((-1, -1), (0, -1), (1, -1), (-1, 0), (1, 0), (-1, 1), (0, 1), (1, 1)):
+        cv2.putText(frame, text, (x + dx, y + dy), cv2.FONT_HERSHEY_SIMPLEX, scale, (0, 0, 0), 1)
+    cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1)
 
 
 def main():
